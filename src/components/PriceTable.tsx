@@ -1,48 +1,83 @@
-const prices = [
-  { material: "Cobre Vermelho", price: "R$ 53,00" },
-  { material: "Cobre Misto", price: "R$ 49,00" },
-  { material: "Cobre de 4ª", price: "R$ 38,00" },
-  { material: "Fio Instalação", price: "R$ 30,00" },
-  { material: "Fio Misto", price: "R$ 14,00" },
-  { material: "Fio Informática", price: "R$ 6,50" },
-  { material: "Latão", price: "R$ 27,00" },
-  { material: "Bronze", price: "R$ 39,00" },
-  { material: "Cavaco Latão", price: "R$ 21,50" },
-  { material: "Radiador", price: "R$ 25,00" },
-  { material: "Chumbo Mole", price: "R$ 4,00" },
-  { material: "Chumbo Duro", price: "R$ 2,00" },
-];
+import { useEffect, useState } from "react";
+
+// Tipagem simples para os dados
+interface PriceItem {
+  material: string;
+  price: string;
+}
 
 const PriceTable = () => {
-  return (
-    <section id="precos" className="py-20 px-4">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="font-heading text-4xl md:text-5xl font-bold text-center uppercase mb-2">
-          <span className="text-gradient-primary">Tabela de Preços</span>
-        </h2>
-        <p className="text-muted-foreground text-center mb-10">Preços válidos para clientes PF — Pagamento à vista</p>
+  const [prices, setPrices] = useState<PriceItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-        <div className="rounded-xl border border-border overflow-hidden bg-card">
-          <div className="bg-gradient-primary px-6 py-3 flex justify-between">
-            <span className="font-heading text-sm uppercase tracking-widest text-primary-foreground font-semibold">Material</span>
-            <span className="font-heading text-sm uppercase tracking-widest text-primary-foreground font-semibold">Preço/kg</span>
-          </div>
-          <div className="divide-y divide-border">
-            {prices.map((item, i) => (
-              <div
-                key={item.material}
-                className={`flex justify-between px-6 py-4 transition-colors hover:bg-muted/50 ${i % 2 === 0 ? "bg-card" : "bg-muted/20"}`}
-              >
-                <span className="font-medium text-foreground">{item.material}</span>
-                <span className="font-heading font-semibold text-secondary">{item.price}</span>
-              </div>
-            ))}
-          </div>
+  // COLOQUE AQUI O LINK QUE VOCÊ COPIOU DO "PUBLICAR NA WEB"
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_JIcbRxmNvhl45thhx_6jT4VvRTZel5uKAbwzO17bEDZIqDSVrzNIDlCMCYljhl4bFlHXJlbYdm73/pub?output=csv";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(SHEET_URL);
+        const csvText = await response.text();
+        
+        // Converte o CSV em Array de Objetos (Ignora a primeira linha de cabeçalho)
+        const lines = csvText.split("\n").slice(1);
+        const parsedData = lines
+          .map((line) => {
+            const [material, price] = line.split(",");
+            return { 
+              material: material?.trim(), 
+              price: price?.trim() 
+            };
+          })
+          .filter((item) => item.material); // Remove linhas em branco
+
+        setPrices(parsedData);
+      } catch (error) {
+        console.error("Erro ao ler planilha:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return (
+    <section id="precos" className="py-24 px-4 bg-[#0a0a0a]">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="font-heading text-4xl md:text-6xl font-bold uppercase mb-4 tracking-tighter text-white">
+            Tabela de <span className="text-[#22c55e]">Preços</span>
+          </h2>
+          <p className="text-gray-400 font-light">
+            Atualizado via Nuvem — Valores para pagamento à vista
+          </p>
         </div>
 
-        <p className="text-muted-foreground text-sm text-center mt-6">
-          * Preços sujeitos à alterações sem aviso prévio.
-        </p>
+        <div className="rounded-2xl border border-white/10 overflow-hidden bg-[#111] shadow-2xl">
+          <div className="bg-[#1a1a1a] px-8 py-4 flex justify-between border-b border-white/5 font-heading text-xs uppercase tracking-[0.2em] font-bold">
+            <span className="text-gray-500">Material</span>
+            <span className="text-[#22c55e]">R$ / KG</span>
+          </div>
+
+          <div className="divide-y divide-white/5">
+            {loading ? (
+              <div className="p-20 text-center">
+                <div className="inline-block w-8 h-8 border-4 border-[#22c55e]/20 border-t-[#22c55e] rounded-full animate-spin" />
+                <p className="text-gray-500 mt-4 text-xs uppercase tracking-widest">Sincronizando com a nuvem...</p>
+              </div>
+            ) : (
+              prices.map((item) => (
+                <div key={item.material} className="flex justify-between items-center px-8 py-5 hover:bg-[#22c55e]/5 transition-colors group">
+                  <span className="font-semibold text-gray-300 group-hover:text-white">{item.material}</span>
+                  <span className="font-heading font-bold text-white text-xl">
+                    <span className="text-[#22c55e] text-sm mr-1">R$</span>{item.price}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );

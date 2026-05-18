@@ -3,44 +3,56 @@ import heroBg from "../assets/hero-bg.png";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <img
-        src={heroBg}
-        alt="Pátio de reciclagem de metais"
-        className="absolute inset-0 w-full h-full object-cover"
-        width={1920}
-        height={1080}
-      />
-      <div className="absolute inset-0 bg-background/85" />
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+    <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+      {/* IMAGEM DE FUNDO */}
+      <div className="absolute inset-0 z-0">
         <img
-          src={logo}
-          alt="R&R Metais Reciclagem"
-          className="mx-auto mb-6 w-40 h-40 md:w-52 md:h-52 drop-shadow-2xl"
-          width={512}
-          height={512}
+          src={heroBg}
+          alt="Pátio de reciclagem de metais"
+          className="w-full h-full object-cover shadow-inner"
         />
-        <h1 className="font-heading text-5xl md:text-7xl font-bold tracking-tight mb-4 uppercase">
-          <span className="text-gradient-primary">R&R Metais</span>
-          <br />
-          <span className="text-foreground">Reciclagem</span>
+        {/* OVERLAY ESCURO - Essencial para o contraste do texto */}
+        <div className="absolute inset-0 bg-black/70 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+      </div>
+
+      {/* CONTEÚDO CENTRAL */}
+      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto mt-16">
+        {/* LOGO CENTRAL */}
+        <div className="mb-8 animate-in fade-in zoom-in duration-700">
+          <img
+            src={logo}
+            alt="R&R Metais Reciclagem"
+            className="mx-auto w-32 h-32 md:w-44 md:h-44 drop-shadow-[0_0_30px_rgba(34,197,94,0.3)]"
+          />
+        </div>
+
+        {/* TÍTULO IMPACTANTE */}
+        <h1 className="font-heading text-6xl md:text-8xl font-extrabold tracking-tighter mb-6 uppercase">
+          <span className="text-[#22c55e] block drop-shadow-md">R&R Metais</span>
+          <span className="text-white block -mt-2 md:-mt-5">Reciclagem</span>
         </h1>
-        <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-8">
-          Compramos e vendemos sucatas e metais não ferrosos. Os melhores preços da região com pagamento à vista.
+
+        {/* DESCRIÇÃO */}
+        <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed">
+          Compramos e vendemos sucatas e metais não ferrosos. <br className="hidden md:block" />
+          Os melhores preços da região com <span className="text-white font-medium">pagamento à vista.</span>
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+        {/* BOTÕES */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a
             href="https://wa.me/5511988673530"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gradient-primary text-primary-foreground font-heading text-lg uppercase tracking-wider px-8 py-4 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2"
+            className="w-full sm:w-auto bg-[#22c55e] text-white font-heading text-lg uppercase tracking-widest px-10 py-5 rounded-md hover:bg-[#1eb054] transition-all hover:scale-105 flex items-center justify-center gap-3 shadow-xl shadow-green-500/20"
           >
             <WhatsAppIcon />
             Fale Conosco
           </a>
+          
           <a
             href="#precos"
-            className="border border-primary text-primary font-heading text-lg uppercase tracking-wider px-8 py-4 rounded-lg hover:bg-primary/10 transition-colors inline-flex items-center justify-center"
+            className="w-full sm:w-auto border-2 border-white/20 hover:border-[#22c55e] text-white hover:text-[#22c55e] font-heading text-lg uppercase tracking-widest px-10 py-5 rounded-md transition-all backdrop-blur-sm hover:bg-white/5"
           >
             Ver Preços
           </a>
