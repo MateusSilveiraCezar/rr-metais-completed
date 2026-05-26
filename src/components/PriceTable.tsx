@@ -19,14 +19,21 @@ const PriceTable = () => {
         const response = await fetch(SHEET_URL);
         const csvText = await response.text();
         
-        // Converte o CSV em Array de Objetos (Ignora a primeira linha de cabeçalho)
-        const lines = csvText.split("\n").slice(1);
+        // O /\r?\n/ garante que vai quebrar a linha do jeito certo, removendo caracteres invisíveis
+        const lines = csvText.split(/\r?\n/).slice(1);
+        
         const parsedData = lines
           .map((line) => {
-            const [material, price] = line.split(",");
+            // Divide por vírgula APENAS se a vírgula não estiver dentro de aspas duplas
+            const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            
+            const material = parts[0] || "";
+            const price = parts[1] || "";
+
             return { 
-              material: material?.trim(), 
-              price: price?.trim() 
+              // O replace(/"/g, '') faz uma limpeza geral removendo qualquer aspa dupla
+              material: material.replace(/"/g, '').trim(), 
+              price: price.replace(/"/g, '').trim() 
             };
           })
           .filter((item) => item.material); // Remove linhas em branco
